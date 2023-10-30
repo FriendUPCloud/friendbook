@@ -15,6 +15,8 @@ Links for reference
 * https://wiki.ubuntu.com/CustomXSession
 * https://wiki.archlinux.org/title/desktop_entries
 * https://unix.stackexchange.com/questions/556456/\
-   openbox-window-on-the-below-layer-is-inaccessible
+    openbox-window-on-the-below-layer-is-inaccessible
 * https://wiki.archlinux.org/title/LightDM
+* https://stackoverflow.com/questions/49755831/\
+    wmctrl-moving-a-fullscreen-window
 
