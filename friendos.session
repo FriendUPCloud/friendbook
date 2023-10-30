@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-google-chrome-stable --kiosk --kiosk-printing
+google-chrome-stable --kiosk --kiosk-printing &
+xterm
 
