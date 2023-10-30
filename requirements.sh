@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo apt -y install jvm
+sudo apt -y install jwm
 
