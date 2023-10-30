@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo cp friendos.session /usr/share/xsessions/
+sudo cp friendos.desktop /usr/share/xsessions/
 
