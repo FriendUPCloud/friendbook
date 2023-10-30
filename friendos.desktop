@@ -3,8 +3,8 @@ Name=Friend OS
 Comment=Log in with your FriendBook credentials
 Type=Application
 Terminal=False
-Exec=/usr/bin/jwm
-TryExec=jwm
+Exec=/usr/bin/openbox
+TryExec=openbox
 Keywords=X11;floating;windowmanager;metaos;
 
 [Window Manager]
