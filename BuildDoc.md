@@ -13,4 +13,7 @@ Links for reference
 -------------------
 
 * https://wiki.ubuntu.com/CustomXSession
+* https://wiki.archlinux.org/title/desktop_entries
+* https://unix.stackexchange.com/questions/556456/\
+   openbox-window-on-the-below-layer-is-inaccessible
 
