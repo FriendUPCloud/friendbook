@@ -10,5 +10,18 @@
 
 Application.run = function( msg )
 {
+	let v = new View( {
+		title: i18n( 'i18n_power' ),
+		width: 640,
+		height: 640,
+		assets: [
+			'Progdir:assets/main.html'
+		]
+	} );
+	v.onClose = function()
+	{
+		Application.quit();
+	}
+	this.mainView = v;
 }
 
