@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-google-chrome-stable --kiosk --kiosk-printing https://localhost:6502/webclient/index.html?native=true &
+google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 sleep 2
 wmctrl -r New Tab - Google Chrome -b toggle,fullscreen
