@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-log_file="~/friendbook.log"
+log_file="$HOME/friendbook.log"
 
-echo "Starting friendbook session." > "$log_file"
+echo "Starting friendbook session." >> "$log_file"
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
