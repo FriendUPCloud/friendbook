@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DISPLAY=:0
+
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
 sleep 6
