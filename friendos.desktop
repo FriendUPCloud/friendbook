@@ -3,8 +3,8 @@ Name=Friend OS
 Comment=Log in with your FriendBook credentials
 Type=Application
 Terminal=False
-Exec=xfwm4
-TryExec=xfwm4
+Exec=jwm
+TryExec=jwm
 Keywords=X11;floating;windowmanager;metaos;
 
 [Window Manager]
