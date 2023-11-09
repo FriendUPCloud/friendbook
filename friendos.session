@@ -22,27 +22,19 @@ while [ -z "$chrome_display" ]; do
     sleep 1
 done
 
-# Set the DISPLAY variable to the Chrome display
-export DISPLAY=":$chrome_display"
+while true; do
+    # Get the active window ID
+    active_window_id=$(xdotool getactivewindow)
 
-echo "Starting friendbook session on display $chrome_display." >> "$log_file"
+    # Maximize the active window
+    echo "We have an active window - setting it to 100% ($active_window_id)." >> "$log_file"
+    xdotool windowsize "$active_window_id" 100% 100%
 
-# Get the active window ID
-active_window_id=""
-
-# Check if there is an active window
-while [ -z "$active_window_id" ] || ! [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; do
-    active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
-    echo "Active window now: $active_window_id ($(xprop -root _NET_ACTIVE_WINDOW))" >> "$log_file"
-    if [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; then
-        break  # Exit the loop when a valid active window ID is found
-    fi
-    sleep 1
+    # Sleep for a short interval (adjust as needed)
+    sleep 2
 done
 
-echo "We have an active window." >> "$log_file"
-
-echo "Active window is $active_window_id" >> "$log_file"
+exit
 
 # Set the "CustomAction" property to the active window
 xdotool set_window --name "CustomAction" $active_window_id
