@@ -5,7 +5,7 @@ cd Projects/friendup/build && ./FriendCore > /dev/null &
 # Wait until openbox runs
 while true; do
     if pgrep -f "openbox" > /dev/null; then
-        echo "Openbox is running, continuing with your script..."
+        echo "Openbox is running, continuing script..."
         # Add your actions here
         break
     fi
@@ -33,10 +33,11 @@ screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
 screen_height=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f2)
 
 # Move and resize the window to cover the entire screen
-xdotool windowsize $active_window_id $screen_width $screen_height
 xdotool windowmove $active_window_id 0 0
+xdotool windowsize $active_window_id $screen_width $screen_height
 
 # Position in the right layer
 wmctrl -i -r $active_window_id -b add,below
 wmctrl -i -a $active_window_id
 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
+

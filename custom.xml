@@ -2,6 +2,7 @@
   <applications>
     <application name="CustomAction">
       <layer>below</layer>
+      <fullscreen>yes</fullscreen>
     </application>
   </applications>
 </openbox_config>
