@@ -2,7 +2,7 @@
 
 log_file="$HOME/friendbook.log"
 
-echo "Starting friendbook session." >> "$log_file"
+echo "Starting friendbook session." > "$log_file"
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
@@ -61,4 +61,4 @@ wmctrl -i -r $active_window_id -b add,below
 wmctrl -i -a $active_window_id
 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
 
-echo "Done." > "$log_file"
+echo "Done." >> "$log_file"
