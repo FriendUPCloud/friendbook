@@ -24,6 +24,9 @@ active_window_id=""
 # Check if there is an active window
 while [ -z "$active_window_id" ]; do
     active_window_id=$(xdotool getactivewindow)
+    if [ -n "$active_window_id" ]; then
+        break  # Exit the loop when an active window is found
+    fi
     sleep 1
 done
 
