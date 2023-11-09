@@ -37,9 +37,6 @@ done
 
 echo "We have an active window." >> "$log_file"
 
-# Get the active window ID
-active_window_id=$(xdotool getactivewindow)
-
 
 echo "Active window is $active_window_id" >> "$log_file"
 
