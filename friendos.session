@@ -26,11 +26,10 @@ echo "Chrome was run. Next look for active window" >> "$log_file"
 active_window_id=""
 
 # Check if there is an active window
-while [ -z "$active_window_id" ]; do
+while [ -z "$active_window_id" ] || ! [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; do
     active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
-    echo "Do we have something ($active_window_id)?" >> "$log_file"
-    if [ -n "$active_window_id" ]; then
-        break  # Exit the loop when an active window is found
+    if [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; then
+        break  # Exit the loop when a valid active window ID is found
     fi
     sleep 1
 done
