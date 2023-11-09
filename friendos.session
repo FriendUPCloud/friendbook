@@ -22,3 +22,4 @@ xdotool windowmove $active_window_id 0 0
 # Position in the right layer
 wmctrl -i -r $active_window_id -b add,below
 wmctrl -i -a $active_window_id
+wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
