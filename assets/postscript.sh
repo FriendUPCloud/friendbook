@@ -42,7 +42,7 @@ done
 
 # Set the "CustomAction" property to the active window
 echo "We got window id: \"$active_window_id\"..." >> "$log_file"
-xdotool set_window --name "Screen" $active_window_id
+DISPLAY=:0 xdotool set_window --name "Screen" $active_window_id
 
 # Get the screen resolution
 screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
@@ -51,13 +51,13 @@ screen_height=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f2)
 echo "Active window dims $screen_width, $screen_height" >> "$log_file"
 
 # Move and resize the window to cover the entire screen
-xdotool windowmove $active_window_id 0 0
-xdotool windowsize $active_window_id $screen_width $screen_height
+DISPLAY=:0 xdotool windowmove $active_window_id 0 0
+DISPLAY=:0 xdotool windowsize $active_window_id $screen_width $screen_height
 
 # Position in the right layer
-wmctrl -i -r $active_window_id -b add,below
-wmctrl -i -a $active_window_id
-wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
+DISPLAY=:0 wmctrl -i -r $active_window_id -b add,below
+DISPLAY=:0 wmctrl -i -a $active_window_id
+DISPLAY=:0 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
 
 echo "Done." >> "$log_file"
 
