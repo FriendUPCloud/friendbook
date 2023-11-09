@@ -3,7 +3,7 @@ Name=Friend OS
 Comment=Log in with your FriendBook credentials
 Type=Application
 Terminal=False
-Exec=/usr/bin/openbox
+Exec=openbox
 TryExec=openbox
 Keywords=X11;floating;windowmanager;metaos;
 
