@@ -41,7 +41,8 @@ while true; do
 done
 
 # Set the "CustomAction" property to the active window
-xdotool set_window --name "FriendBookChrome" $active_window_id
+echo "We got window id: \"$active_window_id\"..." >> "$log_file"
+xdotool set_window --name "Screen" $active_window_id
 
 # Get the screen resolution
 screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
