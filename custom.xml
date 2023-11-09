@@ -1,0 +1,7 @@
+<openbox_config>
+  <applications>
+    <application name="CustomAction">
+      <layer>below</layer>
+    </application>
+  </applications>
+</openbox_config>

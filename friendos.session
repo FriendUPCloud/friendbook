@@ -8,12 +8,12 @@ sleep 4
 # Get the active window ID
 active_window_id=$(xdotool getactivewindow)
 
-# Move the window to the below layer
-wmctrl -i -r $active_window_id -b add,below
+# Set the "CustomAction" property to the active window
+xdotool set_window --name "CustomAction" $active_window_id
 
-# Make the window fullscreen
+# Maximize the window
+xdotool windowsize $active_window_id 100% 100%
+
 wmctrl -i -r $active_window_id -b add,maximized_vert,maximized_horz
-
-# You can also optionally focus the window after performing the above actions
+wmctrl -i -r $active_window_id -b add,below
 wmctrl -i -a $active_window_id
-
