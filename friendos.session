@@ -15,6 +15,7 @@ active_window_id=""
 while true; do
     # Get the active window ID
     active_window_id=$(xdotool getactivewindow)
+	echo "Active window id now: \"$active_window_id\"..." >> "$log_file"
 
     # Check if there is an active window
     if [ -n "$active_window_id" ]; then
