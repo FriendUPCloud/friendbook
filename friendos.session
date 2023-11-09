@@ -22,20 +22,16 @@ google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars 
 
 echo "Chrome was run. Next look for active window" >> "$log_file"
 
-# Check if there is an active window
-while ! xdotool getactivewindow &>/dev/null; do
-    sleep 1
-    echo "No active window found." >> "$log_file"
-    xdotool getactivewindow >> "$log_file"  # Capture the output for debugging
-done
-
 # Get the active window ID
-active_window_id=$(xdotool getactivewindow)
-
+active_window_id=""
 
 # Check if there is an active window
-while ! xdotool getactivewindow &>/dev/null; do
-	echo "No active window found.." >> "$log_file"
+while [ -z "$active_window_id" ]; do
+    active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
+    echo "Checking active window ($active_window_id)" >> "$log_file"
+    if [ -n "$active_window_id" ]; then
+        break  # Exit the loop when an active window is found
+    fi
     sleep 1
 done
 
