@@ -22,8 +22,11 @@ echo "Chrome was run. Next look for active window" >> ~/friendbook.log
 
 # Check if there is an active window
 while ! xdotool getactivewindow &>/dev/null; do
+	echo "No active window found.." >> ~/friendbook.log
     sleep 1
 done
+
+echo "We have an active window." >> ~/friendbook.log
 
 # Get the active window ID
 active_window_id=$(xdotool getactivewindow)
