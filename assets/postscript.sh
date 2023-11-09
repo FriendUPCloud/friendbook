@@ -8,12 +8,11 @@ echo "Starting friendbook session." > "$log_file"
 # Get the active window ID
 active_window_id=""
 
-# Check if there is an active window  
-while [ -z "$active_window_id" ]; do
-    active_window_id=$(xwininfo -root -tree | grep '"-root" _NET_ACTIVE_WINDOW(WINDOW)' | awk '{print $1}')
-    echo "We have a candidate: $active_window_id" >> "$log_file"
-    if [ -n "$active_window_id" ]; then
-        break  # Exit the loop when an active window ID is found
+# Check if there is an active window
+while [ -z "$active_window_id" ] || ! [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; do
+    active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
+    if [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; then
+        break  # Exit the loop when a valid active window ID is found
     fi
     sleep 1
 done
