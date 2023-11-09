@@ -20,7 +20,7 @@ google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars 
 
 # Wait till any window is open
 while true; do
-    if xdotool search --sync --name "."; then
+    if DISPLAY=:0 xdotool search --sync --name "."; then
         echo "A window has been opened." >> "$log_file"
         break
     fi
@@ -28,12 +28,12 @@ while true; do
 done
 
 # Get a list of all open windows
-windows=$(xdotool search --all --name '' 2>/dev/null)
+windows=$(DISPLAY=:0 xdotool search --all --name '' 2>/dev/null)
 
 # Check if there are any open windows
 if [ -n "$windows" ]; then
     # Activate the first window in the list
-    xdotool windowactivate "$(echo "$windows" | head -n 1)"
+    DISPLAY=:0 xdotool windowactivate "$(echo "$windows" | head -n 1)"
 else
     echo "No open windows found."  >> "$log_file"
 fi
