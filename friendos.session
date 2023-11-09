@@ -28,6 +28,7 @@ active_window_id=""
 # Check if there is an active window
 while [ -z "$active_window_id" ] || ! [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; do
     active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
+    echo "Raw output: $(xprop -root _NET_ACTIVE_WINDOW)" >> "$log_file"
     echo "We have a candidate: $active_window_id" >> "$log_file"
     if [[ "$active_window_id" =~ ^0x[0-9a-fA-F]+$ ]]; then
         break  # Exit the loop when a valid active window ID is found
