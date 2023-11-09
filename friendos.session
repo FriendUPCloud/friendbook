@@ -2,9 +2,17 @@
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
-# Check if the "openbox" process is running
-while ! pgrep -x "openbox" > /dev/null; do
+# Check if the GDM process is running
+while ! pgrep -x "gdm-x-session" > /dev/null; do
     sleep 1
+done
+
+# GDM process is running, now wait for "openbox" to appear as a child
+while true; do
+    sleep 1
+    if pgrep -P $(pgrep -x "gdm-x-session") -x "openbox" > /dev/null; then
+        break
+    fi
 done
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
