@@ -18,17 +18,14 @@ sleep 4
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 
-# This will have the active window
-active_window_id=""
-
 # Check if there is an active window
-while [ -z "$active_window_id" ]; do
-    active_window_id=$(xdotool getactivewindow)
-    if [ -n "$active_window_id" ]; then
-        break  # Exit the loop when an active window is found
-    fi
+while ! xdotool getactivewindow &>/dev/null; do
     sleep 1
 done
+
+# Get the active window ID
+active_window_id=$(xdotool getactivewindow)
+
 
 echo "Active window is $active_window_id" >> ~/friendbook.log
 
