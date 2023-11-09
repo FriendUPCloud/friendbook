@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+echo "Starting friendbook session." > ~/friendbook.log
+
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
 # Wait until openbox runs
 while true; do
     if pgrep -f "openbox" > /dev/null; then
-        echo "Openbox is running, continuing script..."
+        echo "Openbox is running, continuing script..." >> ~/friendbook.log
         # Add your actions here
         break
     fi
@@ -25,12 +27,16 @@ while [ -z "$active_window_id" ]; do
     sleep 1
 done
 
+echo "Active window is $active_window_id" >> ~/friendbook.log
+
 # Set the "CustomAction" property to the active window
 xdotool set_window --name "CustomAction" $active_window_id
 
 # Get the screen resolution
 screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
 screen_height=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f2)
+
+echo "Active window dims $screen_width, $screen_height" >> ~/friendbook.log
 
 # Move and resize the window to cover the entire screen
 xdotool windowmove $active_window_id 0 0
@@ -41,3 +47,4 @@ wmctrl -i -r $active_window_id -b add,below
 wmctrl -i -a $active_window_id
 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
 
+echo "Done." > ~/friendbook.log
