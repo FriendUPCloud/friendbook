@@ -18,6 +18,8 @@ sleep 4
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 
+echo "Chrome was run. Next look for active window" >> ~/friendbook.log
+
 # Check if there is an active window
 while ! xdotool getactivewindow &>/dev/null; do
     sleep 1
