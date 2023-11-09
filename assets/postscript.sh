@@ -53,7 +53,7 @@ while true; do
 		DISPLAY=:0 wmctrl -i -a $active_window_id
 		DISPLAY=:0 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
 		
-		DISPLAY=:0 openbox --reconfigure
+		#DISPLAY=:0 openbox --reconfigure
         
         break
     fi
