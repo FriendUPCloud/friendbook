@@ -27,7 +27,8 @@ active_window_id=""
 
 # Check if there is an active window
 while [ -z "$active_window_id" ]; do
-    active_window_id=$(xdotool getactivewindow 2>/dev/null)
+    active_window_id=$(xprop -root _NET_ACTIVE_WINDOW | awk '{print $5}')
+    echo "Do we have something ($active_window_id)?" >> "$log_file"
     if [ -n "$active_window_id" ]; then
         break  # Exit the loop when an active window is found
     fi
