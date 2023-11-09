@@ -1,8 +1,11 @@
 <openbox_config>
   <applications>
-    <application name="CustomAction">
+    <application name="FriendBookChrome">
       <layer>below</layer>
       <fullscreen>yes</fullscreen>
+      <desktop>all</desktop>
+      <maximized>yes</maximized>
+      <decor>no</decor>
     </application>
   </applications>
 </openbox_config>
