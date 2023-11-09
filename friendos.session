@@ -2,10 +2,10 @@
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
-sleep 5
+sleep 6
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 
-sh "$HOME/.config/friendbook/postscript.sh" > /dev/null &
+bash "$HOME/.config/friendbook/postscript.sh" > /dev/null &
 
 
