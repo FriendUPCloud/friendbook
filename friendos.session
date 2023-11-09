@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+cd Projects/friendup/build && ./FriendCore > /dev/null &
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
-sleep 2
+sleep 4
 wmctrl -r New Tab - Google Chrome -b toggle,fullscreen
