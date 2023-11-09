@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
+sleep 4
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 sleep 4
-wmctrl -r New Tab - Google Chrome -b toggle,fullscreen
+
+# Get the active window ID
+active_window_id=$(xdotool getactivewindow)
+
+# Move the window to the below layer
+wmctrl -i -r $active_window_id -b add,below
+
+# Make the window fullscreen
+wmctrl -i -r $active_window_id -b add,maximized_vert,maximized_horz
+
+# You can also optionally focus the window after performing the above actions
+wmctrl -i -a $active_window_id
+
