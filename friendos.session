@@ -2,7 +2,7 @@
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
-#Wait until openbox runs
+# Wait until openbox runs
 while true; do
     if pgrep -f "openbox" > /dev/null; then
         echo "Openbox is running, continuing with your script..."
@@ -12,11 +12,18 @@ while true; do
     sleep 1
 done
 
-google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 sleep 4
 
-# Get the active window ID
-active_window_id=$(xdotool getactivewindow)
+google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
+
+# This will have the active window
+active_window_id=""
+
+# Check if there is an active window
+while [ -z "$active_window_id" ]; do
+    active_window_id=$(xdotool getactivewindow)
+    sleep 1
+done
 
 # Set the "CustomAction" property to the active window
 xdotool set_window --name "CustomAction" $active_window_id
