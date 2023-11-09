@@ -1,18 +1,3 @@
 <openbox_config>
-  <applications>
-    <application name="Screen">
-      <layer>below</layer>
-      <fullscreen>yes</fullscreen>
-      <desktop>all</desktop>
-      <maximized>yes</maximized>
-      <decor>no</decor>
-    </application>
-    <application name="Friend Workspace">
-      <layer>below</layer>
-      <fullscreen>yes</fullscreen>
-      <desktop>all</desktop>
-      <maximized>yes</maximized>
-      <decor>no</decor>
-    </application>
-  </applications>
+  
 </openbox_config>

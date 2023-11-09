@@ -33,6 +33,28 @@ while true; do
     if [ -n "$active_window_id" ]; then
         # Maximize the active window
         DISPLAY=:0 xdotool windowsize "$active_window_id" 100% 100%
+        
+		# Set the "CustomAction" property to the active window
+		echo "We got window id: \"$active_window_id\" - setting name to \"Screen\"..." >> "$log_file"
+		DISPLAY=:0 xdotool set_window --name "Screen" $active_window_id
+
+		# Get the screen resolution
+		screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
+		screen_height=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f2)
+
+		echo "Active window dims $screen_width, $screen_height" >> "$log_file"
+
+		# Move and resize the window to cover the entire screen
+		DISPLAY=:0 xdotool windowmove $active_window_id 0 0
+		DISPLAY=:0 xdotool windowsize $active_window_id $screen_width $screen_height
+
+		# Position in the right layer
+		DISPLAY=:0 wmctrl -i -r $active_window_id -b add,below
+		DISPLAY=:0 wmctrl -i -a $active_window_id
+		DISPLAY=:0 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
+		
+		DISPLAY=:0 openbox --reconfigure
+        
         break
     fi
 
@@ -40,24 +62,7 @@ while true; do
     sleep 1
 done
 
-# Set the "CustomAction" property to the active window
-echo "We got window id: \"$active_window_id\"..." >> "$log_file"
-DISPLAY=:0 xdotool set_window --name "Screen" $active_window_id
 
-# Get the screen resolution
-screen_width=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f1)
-screen_height=$(xrandr | awk '/\*/ {print $1}' | cut -d 'x' -f2)
-
-echo "Active window dims $screen_width, $screen_height" >> "$log_file"
-
-# Move and resize the window to cover the entire screen
-DISPLAY=:0 xdotool windowmove $active_window_id 0 0
-DISPLAY=:0 xdotool windowsize $active_window_id $screen_width $screen_height
-
-# Position in the right layer
-DISPLAY=:0 wmctrl -i -r $active_window_id -b add,below
-DISPLAY=:0 wmctrl -i -a $active_window_id
-DISPLAY=:0 wmctrl -i -r $active_window_id -e 0,0,0,$screen_width,$screen_height
 
 echo "Done." >> "$log_file"
 
