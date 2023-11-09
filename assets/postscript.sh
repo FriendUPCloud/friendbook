@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DISPLAY=:0
+
 log_file="$HOME/friendbook.log"
 
 echo "Starting friendbook session." > "$log_file"
