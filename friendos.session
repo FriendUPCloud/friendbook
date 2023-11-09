@@ -2,15 +2,10 @@
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
-# Define the Openbox process name
-openbox_process="openbox"
-
-# Check if Openbox is running
-while ! pgrep -x "$openbox_process" > /dev/null; do
+# Check if the "openbox" process is running
+while ! pgrep -x "openbox" > /dev/null; do
     sleep 1
 done
-
-sleep 2
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 sleep 4
