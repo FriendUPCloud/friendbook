@@ -4,15 +4,28 @@ log_file="$HOME/friendbook.log"
 
 echo "Welcome to FriendBook" > "$log_file"
 
-export DISPLAY=":0"
-
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
 sleep 6
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
 
-echo "Starting friendbook session." >> "$log_file"
+# Get the display of Google Chrome
+chrome_display=""
+
+# Check if Google Chrome is running and get its display
+while [ -z "$chrome_display" ]; do
+    chrome_pid=$(pgrep -f "google-chrome")
+    if [ -n "$chrome_pid" ]; then
+        chrome_display=$(ps -p "$chrome_pid" o args= | grep -oP "(?<=--display=)[^ ]+")
+    fi
+    sleep 1
+done
+
+# Set the DISPLAY variable to the Chrome display
+export DISPLAY=":$chrome_display"
+
+echo "Starting friendbook session on display $chrome_display." >> "$log_file"
 
 # Get the active window ID
 active_window_id=""
