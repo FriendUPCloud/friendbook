@@ -4,52 +4,46 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 
-void handleWindowCreated( Window window, Display *display )
+void handleWindowCreated( Display *display, Window window )
 {
+    printf( "New window created with ID: %lu\n", window );
+
     // Retrieve and print the window title
     char *windowTitle = NULL;
     XFetchName( display, window, &windowTitle );
     if( windowTitle != NULL )
     {
-       	printf( "New window created with ID: %lu, Title: %s\n", window, windowTitle );
+        printf( "Window title: %s\n", windowTitle );
         XFree( windowTitle );  // Free the memory allocated by XFetchName
-    } 
-    else 
-    {
-        printf( "New window created with ID: %lu\n", window );
     }
-
+    else
+    {
+        printf( "Unable to retrieve window title.\n" );
+    }
+    // Add your custom processing or code to run when a window is created
 }
 
 int main()
 {
     Display *display = XOpenDisplay( NULL );
-    if(display == NULL)
+    if( display == NULL )
     {
-        fprintf(stderr, "Unable to open display.\n");
+        fprintf( stderr, "Unable to open display.\n" );
         return 1;
     }
 
-    Window root = DefaultRootWindow( display );
-    Window parent, *children;
-    unsigned int numChildren;
+    XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
-    if( XQueryTree(display, root, &root, &parent, &children, &numChildren ) ) 
+    XEvent ev;
+    while( 1 )
     {
-        for( unsigned int i = 0; i < numChildren; i++ )
+        XNextEvent( display, &ev );
+        if( ev.type == CreateNotify )
         {
-            handleWindowCreated( children[ i ], display );
+            handleWindowCreated( display, ev.xcreatewindow.window );
         }
-        XFree( children );
-    } 
-    else 
-    {
-        fprintf( stderr, "Unable to query window tree.\n" );
     }
 
     XCloseDisplay( display );
-
     return 0;
 }
-
-
