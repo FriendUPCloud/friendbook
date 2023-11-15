@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <X11/Xlib.h>
 
 void handleWindowCreated( Display *display, Window window )
