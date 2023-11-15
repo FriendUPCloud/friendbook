@@ -1,6 +1,7 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
-LDFLAGS =
+
+CFLAGS = -Wall -Wextra -g $(shell pkg-config --cflags x11)
+LDFLAGS = $(shell pkg-config --libs x11)
 
 # Set DEBUG=1 for debugging, DEBUG=0 for release
 DEBUG = 1
@@ -24,7 +25,7 @@ all: compile
 compile: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)  # Include $(LDFLAGS) here
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -36,4 +37,3 @@ release: DEBUG = 0
 release: clean compile
 
 .PHONY: all clean compile release
-
