@@ -14,6 +14,12 @@ endif
 # List all .c files
 SRCS = $(wildcard *.c)
 
+# List all .c files in the communication/ directory
+SRCS += $(wildcard communication/*.c)
+
+# List all .c files in the windowmanagement/ directory
+SRCS += $(wildcard windows/*.c)
+
 # Generate corresponding .o filenames
 OBJS = $(SRCS:.c=.o)
 

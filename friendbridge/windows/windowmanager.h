@@ -3,7 +3,7 @@
 
 #include <X11/Xlib.h>
 
-int moveWindowToLayer( Display *display, Window window );
+int moveWindowToLayer( Display *display, Window window, char *layerName );
 
 
 
