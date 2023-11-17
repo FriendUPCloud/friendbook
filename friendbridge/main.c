@@ -5,6 +5,8 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <X11/Xlib.h>
+#include "windows/windowmanager.h"
+#include "communication/communication.h"
 
 void handleWindowCreated( Display *display, Window window )
 {
@@ -25,12 +27,6 @@ void handleWindowCreated( Display *display, Window window )
     // Add your custom processing or code to run when a window is created
 }
 
-// Find and handle the workspace window
-void handleWorkspaceWindow()
-{
-	
-}
-
 int main()
 {
     Display *display = XOpenDisplay( NULL );
@@ -42,6 +38,8 @@ int main()
 
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
+	// Just control all windows
+	ControlWindows( display );
 
     XEvent ev;
     while( 1 )
