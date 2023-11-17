@@ -16,32 +16,32 @@ Workspace via websockets to provide a seamless user experience in the browser.
 
 ### Functionality:
 
-*Window Organization by Process ID:*
+**Window Organization by Process ID:**
 
 Friendbridge organizes windows based on their associated process IDs.
 This organization enables the tracking of applications responsible for creating 
 X11 windows. This allows the Friend Workspace to show the windows in the 
 Workspace dock, and manage the windows via calls to Friend Core.
 
-*Special Friend Workspace Window:*
+**Special Friend Workspace Window:**
 
 Friendbridge identifies a special Friend Workspace window acting as a 
 "wallpaper" level window. This specific window is placed in the *below layer* of 
 the X11 stack.
 
-*Event Listening:*
+**Event Listening:**
 
 Friendbridge continuously monitors changes in the X11 window pool.
 It employs an event listener to detect window creation, destruction, and other 
 relevant events.
 
-*Reporting to Friend Core:*
+**Reporting to Friend Core:**
 
 Detected window events trigger the generation of appropriate report messages.
 These report messages are sent to Friend Core, containing details about the 
 associated process and window properties.
 
-*Integration with Friend Core:*
+**Integration with Friend Core:**
 
 Friendbridge's role is to bridge the communication between X11 windows and 
 Friend Core. By organizing windows based on process IDs and tracking relevant 
