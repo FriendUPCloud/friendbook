@@ -73,3 +73,14 @@ void ControlWindows( Display *display )
     }
 }
 
+// Free window class matrix
+void FreeClassHierarchy()
+{
+}
+
+// Rebuild window class matrix
+void RefreshClassHierarchy( Display *display )
+{
+	FreeClassHierarchy();
+}
+
