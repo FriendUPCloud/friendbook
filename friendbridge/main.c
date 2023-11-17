@@ -25,6 +25,12 @@ void handleWindowCreated( Display *display, Window window )
     // Add your custom processing or code to run when a window is created
 }
 
+// Find and handle the workspace window
+void handleWorkspaceWindow()
+{
+	
+}
+
 int main()
 {
     Display *display = XOpenDisplay( NULL );
@@ -35,6 +41,7 @@ int main()
     }
 
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
+
 
     XEvent ev;
     while( 1 )
