@@ -74,8 +74,35 @@ void ControlWindows( Display *display )
 }
 
 // Free window class matrix
-void FreeClassHierarchy()
+void FreeClassHierarchy( WindowClassEntry *matrix )
 {
+	if( matrix == NULL ) return;
+	WindowClassEntry *next = ( WindowClassEntry *)matrix->next;
+	if( next != NULL )
+	{
+		FreeClassHierarchy( next );
+	}
+	if( matrix->className )
+	{
+		printf( "[FreeClassHierarchy] Freeing window class scope: %s\n", matrix->className );
+	}
+	else
+	{
+		printf( "[FreeClassHierarchy] Freeing window class scope: <unknown>\n" );
+	}
+	if( matrix->data != NULL )
+	{
+		FreeWindowEntry( ( WindowEntry *)matrix->data );
+	}
+	free( matrix );
+}
+
+// Free a window entry
+void FreeWindowEntry( WindowEntry *window )
+{
+	if( window == NULL ) return;
+	
+	free( window );
 }
 
 // Rebuild window class matrix

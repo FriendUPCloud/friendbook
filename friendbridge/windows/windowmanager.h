@@ -27,7 +27,7 @@ typedef struct WindowEntry
 
 WindowClassEntry *WindowMatrix;
 
-void FreeClassHierarchy();
+void FreeClassHierarchy( WindowClassEntry *matrix );
 
 void RefreshClassHierarchy( Display *display );
 
