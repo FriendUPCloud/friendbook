@@ -1,3 +1,13 @@
+/*©mit**************************************************************************
+*                                                                              *
+* This file is part of FRIEND UNIFYING PLATFORM.                               *
+* Copyright (c) Friend Software Labs AS. All rights reserved.                  *
+*                                                                              *
+* Licensed under the Source EULA. Please refer to the copy of the MIT License, *
+* found in the file LOCENSE.                                                   *
+*                                                                              *
+*****************************************************************************©*/
+
 #ifndef _windowmanager_h_
 #define _windowmanager_h_
 #include <stdio.h>
@@ -40,6 +50,8 @@ WindowClassEntry *WindowMatrixGetClassEntry( WindowClassEntry *matrix, char *cla
 int WindowMatrixAddClass( WindowClassEntry *matrix, char *className );
 
 int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, char *windowTitle, Display *display, Window *window );
+
+window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle );
 
 void FreeWindowEntry( WindowEntry *entry );
 

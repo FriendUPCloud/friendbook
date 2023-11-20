@@ -1,3 +1,13 @@
+/*©mit**************************************************************************
+*                                                                              *
+* This file is part of FRIEND UNIFYING PLATFORM.                               *
+* Copyright (c) Friend Software Labs AS. All rights reserved.                  *
+*                                                                              *
+* Licensed under the Source EULA. Please refer to the copy of the MIT License, *
+* found in the file LOCENSE.                                                   *
+*                                                                              *
+*****************************************************************************©*/
+
 #include "windowmanager.h"
 
 WindowClassEntry *CreateWindowMatrix()
@@ -267,7 +277,7 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		bdata->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
 		snprintf( bdata->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
 		
-		printf( " > In %s, added 1st window \"%s\" titled: %s\n", className, windowName, windowTitle );
+		printf( " > In %s, added 1st windowindow *GetWindowFromMatrix( char *className, char *windowTitle )w \"%s\" titled: %s\n", className, windowName, windowTitle );
 	}
 	else
 	{
@@ -295,6 +305,15 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		printf( " > In %s, added window \"%s\" titled: %s\n", className, windowName, windowTitle );
 	}
 	return 1;
+}
+
+// Get a window by title and class name
+window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle )
+{
+	// Get position in classes
+	WindowClassEntry *position = WindowMatrixGetClassEntry( matrix, className );
+	if( position == NULL ) return;
+	
 }
 
 
