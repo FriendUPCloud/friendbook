@@ -119,33 +119,42 @@ void FreeWindowEntry( WindowEntry *window )
 // Rebuild window class matrix
 void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
 {
+	printf( "[RefreshWindowMatrix] Start refreshing window matrix.\n" );
 	FreeWindowMatrix( matrix );
+	printf( "[RefreshWindowMatrix] Freed window matrix.\n" );
 	matrix = CreateWindowMatrix();
+	printf( "[RefreshWindowMatrix] Created new matrix.\n" );
 	
 	Window root = DefaultRootWindow( display );
 	Window parent, *children;
 	unsigned int nchildren = 0;
 	
+	printf( "[RefreshWindowMatrix] Polling display tree.\n" );
 	if( XQueryTree( display, root, &root, &parent, &children, &nchildren ) )
 	{
+		printf( "[RefreshWindowMatrix] > Checking children.\n" );
         for( unsigned int i = 0; i < nchildren; i++ )
         {
         	XClassHint classHint;
 			char *className, *windowName;
-			Window window = children[ nchildren ];
+			Window window = children[ i ];
+			printf( "[RefreshWindowMatrix] > > Checking window.\n" );
 			if( XGetClassHint( display, window, &classHint ) )
 			{
             	className = classHint.res_name ? classHint.res_name : "Unknown";
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
+				printf( "[RefreshWindowMatrix] > > > Testing matrix for class %s.\n", className );
 				
 				// Check if window already has class
 				if( !WindowMatrixHasClass( className, matrix ) )
 				{
 					// If not, then create it
+					printf( "[RefreshWindowMatrix] > > > > Adding to matrix class %s.\n", className );
 					WindowMatrixAddClass( className, matrix );
 				}
 				
 				// Add the window to the class of windows in the matrix
+				printf( "[RefreshWindowMatrix] > > > Adding to matrix window %s/%s.\n", className, windowName );
 				WindowMatrixAddWindow( className, windowName, display, &window, matrix );
 								
 				XFree( classHint.res_name );
@@ -162,8 +171,11 @@ int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
 	WindowClassEntry *pos = matrix;
 	do
 	{
-		if( strcmp( pos->className, className ) == 0 )
-			return 1;
+		if( pos->className )
+		{
+			if( strcmp( pos->className, className ) == 0 )
+				return 1;
+		}
 	}
 	while( ( pos = pos->next ) != NULL );
 	return 0;
@@ -175,7 +187,10 @@ WindowClassEntry *WindowMatrixGetClassEntry( char *className, WindowClassEntry *
 	do
 	{
 		if( strcmp( pos->className, className ) == 0 )
+		{
+			printf( "[WindowMatrixGetClassEntry] classname %s exists :-)\n", className );
 			return pos;
+		}
 	}
 	while( ( pos = pos->next ) != NULL );
 	return NULL;
@@ -219,6 +234,7 @@ int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
 
 int WindowMatrixAddWindow( char *className, char *windowName, Display *display, Window *window, WindowClassEntry *matrix )
 {
+	printf( "Adding window to matrix.\n" );
 	WindowClassEntry *byClass = WindowMatrixGetClassEntry( className, matrix );
 	if( byClass == NULL ) return 0;
 	
