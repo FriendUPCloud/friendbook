@@ -117,45 +117,36 @@ void FreeWindowEntry( WindowEntry *window )
 }
 
 // Rebuild window class matrix
-void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
+void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display )
 {
-	printf( "[RefreshWindowMatrix] Start refreshing window matrix.\n" );
 	FreeWindowMatrix( matrix );
-	printf( "[RefreshWindowMatrix] Freed window matrix.\n" );
 	matrix = CreateWindowMatrix();
-	printf( "[RefreshWindowMatrix] Created new matrix.\n" );
 	
 	Window root = DefaultRootWindow( display );
 	Window parent, *children;
 	unsigned int nchildren = 0;
 	
-	printf( "[RefreshWindowMatrix] Polling display tree.\n" );
 	if( XQueryTree( display, root, &root, &parent, &children, &nchildren ) )
 	{
-		printf( "[RefreshWindowMatrix] > Checking children.\n" );
         for( unsigned int i = 0; i < nchildren; i++ )
         {
         	XClassHint classHint;
 			char *className, *windowName;
 			Window window = children[ i ];
-			printf( "[RefreshWindowMatrix] > > Checking window.\n" );
 			if( XGetClassHint( display, window, &classHint ) )
 			{
             	className = classHint.res_name ? classHint.res_name : "Unknown";
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
-				printf( "[RefreshWindowMatrix] > > > Testing matrix for class %s.\n", className );
 				
 				// Check if window already has class
-				if( !WindowMatrixHasClass( className, matrix ) )
+				if( !WindowMatrixHasClass( matrix, className ) )
 				{
 					// If not, then create it
-					printf( "[RefreshWindowMatrix] > > > > Adding to matrix class %s.\n", className );
-					WindowMatrixAddClass( className, matrix );
+					WindowMatrixAddClass( matrix, className );
 				}
 				
 				// Add the window to the class of windows in the matrix
-				printf( "[RefreshWindowMatrix] > > > Adding to matrix window %s/%s.\n", className, windowName );
-				WindowMatrixAddWindow( className, windowName, display, &window, matrix );
+				WindowMatrixAddWindow( matrix, className, windowName, display, &window );
 								
 				XFree( classHint.res_name );
 				XFree( classHint.res_class );
@@ -166,7 +157,7 @@ void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
 }
 
 
-int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
+int WindowMatrixHasClass( WindowClassEntry *matrix, char *className )
 {
 	WindowClassEntry *pos = matrix;
 	do
@@ -174,43 +165,47 @@ int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
 		if( pos->className )
 		{
 			if( strcmp( pos->className, className ) == 0 )
+			{
 				return 1;
+			}
 		}
+		pos = pos->next;
 	}
-	while( ( pos = pos->next ) != NULL );
+	while( pos != NULL );
 	return 0;
 }
 
-WindowClassEntry *WindowMatrixGetClassEntry( char *className, WindowClassEntry *matrix )
+WindowClassEntry *WindowMatrixGetClassEntry( WindowClassEntry *matrix, char *className )
 {
 	WindowClassEntry *pos = matrix;
 	do
 	{
 		if( strcmp( pos->className, className ) == 0 )
 		{
-			printf( "[WindowMatrixGetClassEntry] classname %s exists :-)\n", className );
 			return pos;
 		}
+		pos = pos->next;
 	}
-	while( ( pos = pos->next ) != NULL );
+	while( pos->next != NULL );
 	return NULL;
 }
 
-int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
+int WindowMatrixAddClass( WindowClassEntry *matrix, char *className )
 {
 	WindowClassEntry *new = NULL;
+	int first = 0;
+	
 	// First entry, set new to matrix
-	if( matrix->head == matrix->tail && matrix->head == matrix )
+	if( matrix->className == NULL )
 	{
 		new = matrix;
+		first = 1;
 	}
 	else
 	{
 		// Make sure it does not fail
 		if( ( new = calloc( 1, sizeof( WindowClassEntry ) ) ) == NULL )
-		{
 			return 0;
-		}
 	}
 	
 	// Copy class name, make sure it does not fail
@@ -221,21 +216,31 @@ int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
 			free( new );
 		return 0;
 	}
-	snprintf( new->className, strlen( className ), "%s", className );
+	snprintf( new->className, strlen( className ) + 1, "%s", className );
 	
-	matrix->tail->next = new; // Attach new to current tail's next
-	matrix->tail = ( void *)new;       // Attach new to current tail
-	new->head = matrix->head; // New head 
-	new->tail = new;          // New tail is self
+	// Second + sibling
+	if( first == 0 )
+	{
+		matrix->tail->next = new;
+	}
+	// First sibling
+	else
+	{
+		matrix->next = new;
+	}
+	matrix->tail = new;
+	
+	printf( "Adding class %s\n", className );
+	
+	new->head = matrix;       // New head 
 	new->next = NULL;         // There's no next
 	new->data = NULL;         // There's no data
 	return 1;
 }
 
-int WindowMatrixAddWindow( char *className, char *windowName, Display *display, Window *window, WindowClassEntry *matrix )
+int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, Display *display, Window *window )
 {
-	printf( "Adding window to matrix.\n" );
-	WindowClassEntry *byClass = WindowMatrixGetClassEntry( className, matrix );
+	WindowClassEntry *byClass = WindowMatrixGetClassEntry( matrix, className );
 	if( byClass == NULL ) return 0;
 	
 	if( byClass->data == NULL )
@@ -266,7 +271,7 @@ int WindowMatrixAddWindow( char *className, char *windowName, Display *display, 
 		
 		// Copy window name, make sure it does not fail
 		new->windowName = calloc( 1, strlen( windowName ) + 1 );
-		snprintf( new->windowName, strlen( windowName ), "%s", windowName );
+		snprintf( new->windowName, strlen( windowName ) + 1, "%s", windowName );
 		printf( " > In %s, added window %s\n", className, windowName );
 	}
 	return 1;

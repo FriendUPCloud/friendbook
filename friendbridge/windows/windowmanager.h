@@ -30,15 +30,15 @@ WindowClassEntry *CreateWindowMatrix();
 
 void FreeWindowMatrix( WindowClassEntry *matrix );
 
-void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix );
+void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display );
 
-int WindowMatrixHasClass( char *className, WindowClassEntry *matrix );
+int WindowMatrixHasClass( WindowClassEntry *matrix, char *className );
 
-WindowClassEntry *WindowMatrixGetClassEntry( char *className, WindowClassEntry *matrix );
+WindowClassEntry *WindowMatrixGetClassEntry( WindowClassEntry *matrix, char *className );
 
-int WindowMatrixAddClass( char *className, WindowClassEntry *matrix );
+int WindowMatrixAddClass( WindowClassEntry *matrix, char *className );
 
-int WindowMatrixAddWindow( char *className, char *windowName, Display *display, Window *window, WindowClassEntry *matrix );
+int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, Display *display, Window *window );
 
 void FreeWindowEntry( WindowEntry *entry );
 

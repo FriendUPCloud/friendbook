@@ -45,7 +45,7 @@ int main()
 	//ControlWindows( display );
 	
 	// Collect all windows in the window matrix
-	RefreshWindowMatrix( display, matrix );
+	RefreshWindowMatrix( matrix, display );
 
     XEvent ev;
     while( 1 )
