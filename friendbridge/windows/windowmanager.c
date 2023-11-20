@@ -225,11 +225,12 @@ int WindowMatrixAddWindow( char *className, char *windowName, Display *display, 
 	if( byClass->data == NULL )
 	{
 		byClass->data = calloc( 1, sizeof( WindowEntry ) );
-		( ( WindowEntry *)byClass->data )->head = byClass->data;
-		( ( WindowEntry *)byClass->data )->tail = byClass->data;
-		( ( WindowEntry *)byClass->data )->next = NULL;
-		( ( WindowEntry *)byClass->data )->display = display;
-		( ( WindowEntry *)byClass->data )->window = window;
+		WindowEntry *bdata = ( WindowEntry *)byClass->data;
+		bdata->head = byClass->data;
+		bdata->tail = byClass->data;
+		bdata->next = NULL;
+		bdata->display = display;
+		bdata->window = window;
 	}
 	else
 	{
