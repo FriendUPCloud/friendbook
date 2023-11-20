@@ -140,14 +140,6 @@ void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display )
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
 				char *windowTitle = NULL;
 				
-				/*if( XGetTextProperty( display, window, &prop, XA_WM_NAME ) && prop.value && prop.nitems > 0 )
-				{
-					if( XmbTextPropertyToTextList( display, &prop, &list, &count ) >= Success && count > 0 )
-					{
-						windowTitle = list[0];
-						XFreeStringList( list );
-					}
-				}*/
 				if( XGetTextProperty( display, window, &prop, XA_WM_NAME ) && prop.value && prop.nitems > 0 ) 
 				{
 					windowTitle = ( char *)prop.value;
