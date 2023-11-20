@@ -272,7 +272,7 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		// Copy window name, make sure it does not fail
 		new->windowName = calloc( 1, strlen( windowName ) + 1 );
 		snprintf( new->windowName, strlen( windowName ) + 1, "%s", windowName );
-		printf( " > In %s, added window %s\n", className, windowName );
+		printf( " > In %s, added window \"%s\"\n", className, windowName );
 	}
 	return 1;
 }
