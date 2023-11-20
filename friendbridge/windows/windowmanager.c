@@ -74,7 +74,7 @@ void ControlWindows( Display *display )
 }
 
 // Free window class matrix
-void FreeClassHierarchy( WindowClassEntry *matrix )
+void FreeWindowMatrix( WindowClassEntry *matrix )
 {
 	if( matrix == NULL ) return;
 	WindowClassEntry *next = ( WindowClassEntry *)matrix->next;
@@ -106,8 +106,58 @@ void FreeWindowEntry( WindowEntry *window )
 }
 
 // Rebuild window class matrix
-void RefreshClassHierarchy( Display *display )
+void RefreshWindowMatrix( Display *display )
 {
 	FreeClassHierarchy();
+	
+	Window root = DefaultRootWindow( display );
+	Window parent, *children;
+	unsigned int nchildren = 0;
+	
+	if( XQueryTree( display, root, &root, &parent, &children, &nchildren ) )
+	{
+        for( unsigned int i = 0; i < nchildren; i++ )
+        {
+        	XClassHint classHint;
+			char *className, *windowName;
+			if( XGetClassHint( display, window, &classHint ) )
+			{
+            	className = classHint.res_name ? classHint.res_name : "Unknown";
+				windowName = classHint.res_class ? classHint.res_class : "Unknown";
+				printf( "Class: %s\n", className );
+				printf( "Instance: %s\n", windowName );
+				
+				// Check if window already has class
+				if( !WindowMatrixHasClass( className, WindowMatrix ) )
+				{
+					// If not, then create it
+					WindowMatrixAddClass( className, WindowMatrix );
+				}
+				
+				// Add the window to the class of windows in the matrix
+				WindowMatrixAddWindow( className, &window, WindowMatrix );
+								
+				XFree( classHint.res_name );
+				XFree( classHint.res_class );
+        	}
+        }
+        XFree( children );
+    }
+}
+
+
+int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
+{
+	return 0;
+}
+
+int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
+{
+	return 0;
+}
+
+void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *matrix )
+{
+	return;
 }
 

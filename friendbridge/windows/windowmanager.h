@@ -27,9 +27,15 @@ typedef struct WindowEntry
 
 WindowClassEntry *WindowMatrix;
 
-void FreeClassHierarchy( WindowClassEntry *matrix );
+void FreeWindowMatrix( WindowClassEntry *matrix );
 
-void RefreshClassHierarchy( Display *display );
+void RefreshWindowMatrix( Display *display );
+
+int WindowMatrixHasClass( char *className, WindowClassEntry *matrix );
+
+int WindowMatrixAddClass( char *className, WindowClassEntry *matrix );
+
+void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *matrix );
 
 int MoveWindowToLayer( Display *display, Window window, char *layerName );
 
