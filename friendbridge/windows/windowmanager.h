@@ -22,6 +22,7 @@ typedef struct WindowEntry_s
 	struct WindowEntry_s *tail;
 	struct WindowEntry_s *next;
 	char *windowName;
+	char *windowTitle;
 	Display *display;
 	Window *window;
 } WindowEntry;
@@ -38,7 +39,7 @@ WindowClassEntry *WindowMatrixGetClassEntry( WindowClassEntry *matrix, char *cla
 
 int WindowMatrixAddClass( WindowClassEntry *matrix, char *className );
 
-int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, Display *display, Window *window );
+int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, char *windowTitle, Display *display, Window *window );
 
 void FreeWindowEntry( WindowEntry *entry );
 

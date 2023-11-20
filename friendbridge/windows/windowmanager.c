@@ -125,6 +125,7 @@ void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display )
 	Window root = DefaultRootWindow( display );
 	Window parent, *children;
 	unsigned int nchildren = 0;
+	XTextProperty prop;
 	
 	if( XQueryTree( display, root, &root, &parent, &children, &nchildren ) )
 	{
@@ -137,6 +138,20 @@ void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display )
 			{
             	className = classHint.res_name ? classHint.res_name : "Unknown";
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
+				char *windowTitle = NULL;
+				
+				/*if( XGetTextProperty( display, window, &prop, XA_WM_NAME ) && prop.value && prop.nitems > 0 )
+				{
+					if( XmbTextPropertyToTextList( display, &prop, &list, &count ) >= Success && count > 0 )
+					{
+						windowTitle = list[0];
+						XFreeStringList( list );
+					}
+				}*/
+				if( XGetTextProperty( display, window, &prop, XA_WM_NAME ) && prop.value && prop.nitems > 0 ) 
+				{
+					windowTitle = ( char *)prop.value;
+				}
 				
 				// Check if window already has class
 				if( !WindowMatrixHasClass( matrix, className ) )
@@ -146,7 +161,7 @@ void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display )
 				}
 				
 				// Add the window to the class of windows in the matrix
-				WindowMatrixAddWindow( matrix, className, windowName, display, &window );
+				WindowMatrixAddWindow( matrix, className, windowName, windowTitle, display, &window );
 								
 				XFree( classHint.res_name );
 				XFree( classHint.res_class );
@@ -238,7 +253,7 @@ int WindowMatrixAddClass( WindowClassEntry *matrix, char *className )
 	return 1;
 }
 
-int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, Display *display, Window *window )
+int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, char *windowTitle, Display *display, Window *window )
 {
 	WindowClassEntry *byClass = WindowMatrixGetClassEntry( matrix, className );
 	if( byClass == NULL ) return 0;
@@ -252,6 +267,15 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		bdata->next = NULL;
 		bdata->display = display;
 		bdata->window = window;
+		
+		// Copy window name, make sure it does not fail
+		bdata->windowName = calloc( 1, strlen( windowName ) + 1 );
+		snprintf( bdata->windowName, strlen( windowName ) + 1, "%s", windowName );
+		
+		bdata->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
+		snprintf( bdata->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
+		
+		printf( " > In %s, added 1st window \"%s\" titled: %s\n", className, windowName, windowTitle );
 	}
 	else
 	{
@@ -272,7 +296,11 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		// Copy window name, make sure it does not fail
 		new->windowName = calloc( 1, strlen( windowName ) + 1 );
 		snprintf( new->windowName, strlen( windowName ) + 1, "%s", windowName );
-		printf( " > In %s, added window \"%s\"\n", className, windowName );
+		
+		new->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
+		snprintf( new->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
+		
+		printf( " > In %s, added window \"%s\" titled: %s\n", className, windowName, windowTitle );
 	}
 	return 1;
 }
