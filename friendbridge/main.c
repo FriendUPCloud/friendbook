@@ -42,7 +42,10 @@ int main()
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
 	// Just control all windows
-	ControlWindows( display );
+	//ControlWindows( display );
+	
+	// Collect all windows in the window matrix
+	RefreshWindowMatrix( display, matrix );
 
     XEvent ev;
     while( 1 )

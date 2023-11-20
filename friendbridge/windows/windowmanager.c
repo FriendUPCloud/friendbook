@@ -133,12 +133,10 @@ void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
         	XClassHint classHint;
 			char *className, *windowName;
 			Window window = children[ nchildren ];
-			if( XGetClassHint( display, &window, &classHint ) )
+			if( XGetClassHint( display, window, &classHint ) )
 			{
             	className = classHint.res_name ? classHint.res_name : "Unknown";
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
-				printf( "Class: %s\n", className );
-				printf( "Instance: %s\n", windowName );
 				
 				// Check if window already has class
 				if( !WindowMatrixHasClass( className, matrix ) )
@@ -148,7 +146,7 @@ void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
 				}
 				
 				// Add the window to the class of windows in the matrix
-				WindowMatrixAddWindow( className, &window, matrix );
+				WindowMatrixAddWindow( className, windowName, display, &window, matrix );
 								
 				XFree( classHint.res_name );
 				XFree( classHint.res_class );
@@ -169,6 +167,18 @@ int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
 	}
 	while( ( pos = pos->next ) != NULL );
 	return 0;
+}
+
+WindowClassEntry *WindowMatrixGetClassEntry( char *className, WindowClassEntry *matrix )
+{
+	WindowClassEntry *pos = matrix;
+	do
+	{
+		if( strcmp( pos->className, className ) == 0 )
+			return pos;
+	}
+	while( ( pos = pos->next ) != NULL );
+	return NULL;
 }
 
 int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
@@ -207,9 +217,42 @@ int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
 	return 1;
 }
 
-void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *matrix )
+int WindowMatrixAddWindow( char *className, char *windowName, Display *display, Window *window, WindowClassEntry *matrix )
 {
-	return;
+	WindowClassEntry *byClass = WindowMatrixGetClassEntry( className, matrix );
+	if( byClass == NULL ) return 0;
+	
+	if( byClass->data == NULL )
+	{
+		byClass->data = calloc( 1, sizeof( WindowEntry ) );
+		( ( WindowEntry *)byClass->data )->head = byClass->data;
+		( ( WindowEntry *)byClass->data )->tail = byClass->data;
+		( ( WindowEntry *)byClass->data )->next = NULL;
+		( ( WindowEntry *)byClass->data )->display = display;
+		( ( WindowEntry *)byClass->data )->window = window;
+	}
+	else
+	{
+		WindowEntry *wins = ( ( WindowEntry *)byClass->data )->tail;
+		WindowEntry *new = calloc( 1, sizeof( WindowEntry ) );
+		
+		// Move offsets
+		wins->next = new;
+		wins->tail = new;
+		
+		// Set data on window entry
+		new->tail = new;
+		new->head = wins->head;
+		new->next = NULL;
+		new->display = display;
+		new->window = window;
+		
+		// Copy window name, make sure it does not fail
+		new->windowName = calloc( 1, strlen( windowName ) + 1 );
+		snprintf( new->windowName, strlen( windowName ), "%s", windowName );
+		printf( " > In %s, added window %s\n", className, windowName );
+	}
+	return 1;
 }
 
 
