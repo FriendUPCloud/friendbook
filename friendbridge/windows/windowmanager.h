@@ -7,37 +7,37 @@
 #include <X11/Xutil.h>
 #include <string.h>
 
-typedef struct WindowClassEntry
+typedef struct WindowClassEntry_s
 {
-	void *head;
-	void *tail;
-	void *next;
+	struct WindowClassEntry_s *head;
+	struct WindowClassEntry_s *tail;
+	struct WindowClassEntry_s *next;
 	char *className;
 	void *data;
-};
+} WindowClassEntry;
 
-typedef struct WindowEntry
+typedef struct WindowEntry_s
 {
-	void *head;
-	void *tail;
-	void *next;
+	struct WindowEntry_s *head;
+	struct WindowEntry_s *tail;
+	struct WindowEntry_s *next;
 	Display *display;
 	Window *window;
-};
+} WindowEntry;
 
-WindowClassEntry *WindowMatrix;
-
-void CreateWindowMatrix( WindowMatrix *matrix );
+WindowClassEntry *CreateWindowMatrix();
 
 void FreeWindowMatrix( WindowClassEntry *matrix );
 
-void RefreshWindowMatrix( Display *display );
+void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix );
 
 int WindowMatrixHasClass( char *className, WindowClassEntry *matrix );
 
 int WindowMatrixAddClass( char *className, WindowClassEntry *matrix );
 
 void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *matrix );
+
+void FreeWindowEntry( WindowEntry *entry );
 
 int MoveWindowToLayer( Display *display, Window window, char *layerName );
 

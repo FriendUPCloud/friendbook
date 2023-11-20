@@ -1,13 +1,14 @@
 #include "windowmanager.h"
 
-WindowMatrix *CreateWindowMatrix()
+WindowClassEntry *CreateWindowMatrix()
 {
-	WindowMatrix *wm = calloc( 1, sizeof( WindowMatrix ) );
+	WindowClassEntry *wm = calloc( 1, sizeof( WindowClassEntry ) );
 	wm->next = NULL;
 	wm->tail = wm;
 	wm->head = wm;
 	wm->data = NULL;
 	wm->className = NULL;
+	return wm;
 }
 
 int MoveWindowToLayer( Display *display, Window window, char *layerName )
@@ -90,7 +91,7 @@ void FreeWindowMatrix( WindowClassEntry *matrix )
 	WindowClassEntry *next = ( WindowClassEntry *)matrix->next;
 	if( next != NULL )
 	{
-		FreeClassHierarchy( next );
+		FreeWindowMatrix( next );
 	}
 	if( matrix->className )
 	{
@@ -116,9 +117,10 @@ void FreeWindowEntry( WindowEntry *window )
 }
 
 // Rebuild window class matrix
-void RefreshWindowMatrix( Display *display )
+void RefreshWindowMatrix( Display *display, WindowClassEntry *matrix )
 {
-	FreeClassHierarchy();
+	FreeWindowMatrix( matrix );
+	matrix = CreateWindowMatrix();
 	
 	Window root = DefaultRootWindow( display );
 	Window parent, *children;
@@ -130,7 +132,8 @@ void RefreshWindowMatrix( Display *display )
         {
         	XClassHint classHint;
 			char *className, *windowName;
-			if( XGetClassHint( display, window, &classHint ) )
+			Window window = children[ nchildren ];
+			if( XGetClassHint( display, &window, &classHint ) )
 			{
             	className = classHint.res_name ? classHint.res_name : "Unknown";
 				windowName = classHint.res_class ? classHint.res_class : "Unknown";
@@ -138,14 +141,14 @@ void RefreshWindowMatrix( Display *display )
 				printf( "Instance: %s\n", windowName );
 				
 				// Check if window already has class
-				if( !WindowMatrixHasClass( className, WindowMatrix ) )
+				if( !WindowMatrixHasClass( className, matrix ) )
 				{
 					// If not, then create it
-					WindowMatrixAddClass( className, WindowMatrix );
+					WindowMatrixAddClass( className, matrix );
 				}
 				
 				// Add the window to the class of windows in the matrix
-				WindowMatrixAddWindow( className, &window, WindowMatrix );
+				WindowMatrixAddWindow( className, &window, matrix );
 								
 				XFree( classHint.res_name );
 				XFree( classHint.res_class );
@@ -196,7 +199,7 @@ int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
 	snprintf( new->className, strlen( className ), "%s", className );
 	
 	matrix->tail->next = new; // Attach new to current tail's next
-	matrix->tail = new;       // Attach new to current tail
+	matrix->tail = ( void *)new;       // Attach new to current tail
 	new->head = matrix->head; // New head 
 	new->tail = new;          // New tail is self
 	new->next = NULL;         // There's no next
@@ -208,4 +211,5 @@ void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *m
 {
 	return;
 }
+
 
