@@ -27,6 +27,8 @@ typedef struct WindowEntry
 
 WindowClassEntry *WindowMatrix;
 
+void CreateWindowMatrix( WindowMatrix *matrix );
+
 void FreeWindowMatrix( WindowClassEntry *matrix );
 
 void RefreshWindowMatrix( Display *display );

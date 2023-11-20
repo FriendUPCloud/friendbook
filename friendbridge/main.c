@@ -36,6 +36,9 @@ int main()
         return 1;
     }
 
+	// Create window matrix
+	WindowMatrix = CreateWindowMatrix();
+
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
 	// Just control all windows
@@ -52,5 +55,8 @@ int main()
     }
 
     XCloseDisplay( display );
+    
+    // Clear memory used by window matrix
+    FreeWindowMatrix( WindowMatrix );
     return 0;
 }

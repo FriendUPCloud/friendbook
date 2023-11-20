@@ -1,5 +1,15 @@
 #include "windowmanager.h"
 
+WindowMatrix *CreateWindowMatrix()
+{
+	WindowMatrix *wm = calloc( 1, sizeof( WindowMatrix ) );
+	wm->next = NULL;
+	wm->tail = wm;
+	wm->head = wm;
+	wm->data = NULL;
+	wm->className = NULL;
+}
+
 int MoveWindowToLayer( Display *display, Window window, char *layerName )
 {
 	if( layerName == NULL ) return 0;
@@ -148,12 +158,50 @@ void RefreshWindowMatrix( Display *display )
 
 int WindowMatrixHasClass( char *className, WindowClassEntry *matrix )
 {
+	WindowClassEntry *pos = matrix;
+	do
+	{
+		if( strcmp( pos->className, className ) == 0 )
+			return 1;
+	}
+	while( ( pos = pos->next ) != NULL );
 	return 0;
 }
 
 int WindowMatrixAddClass( char *className, WindowClassEntry *matrix )
 {
-	return 0;
+	WindowClassEntry *new = NULL;
+	// First entry, set new to matrix
+	if( matrix->head == matrix->tail && matrix->head == matrix )
+	{
+		new = matrix;
+	}
+	else
+	{
+		// Make sure it does not fail
+		if( ( new = calloc( 1, sizeof( WindowClassEntry ) ) ) == NULL )
+		{
+			return 0;
+		}
+	}
+	
+	// Copy class name, make sure it does not fail
+	new->className = calloc( 1, strlen( className ) + 1 );
+	if( new->className == NULL )
+	{
+		if( new != matrix )
+			free( new );
+		return 0;
+	}
+	snprintf( new->className, strlen( className ), "%s", className );
+	
+	matrix->tail->next = new; // Attach new to current tail's next
+	matrix->tail = new;       // Attach new to current tail
+	new->head = matrix->head; // New head 
+	new->tail = new;          // New tail is self
+	new->next = NULL;         // There's no next
+	new->data = NULL;         // There's no data
+	return 1;
 }
 
 void WindowMatrixAddWindow( char *className, Window *window, WindowClassEntry *matrix )
