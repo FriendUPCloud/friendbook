@@ -277,7 +277,7 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		bdata->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
 		snprintf( bdata->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
 		
-		printf( " > In %s, added 1st windowindow *GetWindowFromMatrix( char *className, char *windowTitle )w \"%s\" titled: %s\n", className, windowName, windowTitle );
+		printf( " > In %s, added 1st windowindow \"%s\" titled: %s\n", className, windowName, windowTitle );
 	}
 	else
 	{
@@ -308,12 +308,12 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 }
 
 // Get a window by title and class name
-window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle )
+Window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle )
 {
 	// Get position in classes
 	WindowClassEntry *position = WindowMatrixGetClassEntry( matrix, className );
-	if( position == NULL ) return;
-	
+	if( position == NULL ) return ( Window *)NULL;
+	return ( Window *)NULL;
 }
 
 

@@ -18,7 +18,7 @@
 #include "windows/windowmanager.h"
 #include "communication/communication.h"
 
-void handleWindowCreated( Display *display, Window window )
+void HandleWindowCreated( Display *display, Window window )
 {
     printf( "New window created with ID: %lu\n", window );
 
@@ -63,7 +63,7 @@ int main()
         XNextEvent( display, &ev );
         if( ev.type == CreateNotify )
         {
-            handleWindowCreated( display, ev.xcreatewindow.window );
+            HandleWindowCreated( display, ev.xcreatewindow.window );
         }
     }
 

@@ -51,7 +51,7 @@ int WindowMatrixAddClass( WindowClassEntry *matrix, char *className );
 
 int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *windowName, char *windowTitle, Display *display, Window *window );
 
-window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle );
+Window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *windowTitle );
 
 void FreeWindowEntry( WindowEntry *entry );
 
