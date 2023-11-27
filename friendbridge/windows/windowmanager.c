@@ -63,7 +63,7 @@ Window FindWindowByName( const char *windowName )
 {
     // Construct the xdotool command
     char command[ 100 ];
-    snprintf( command, sizeof( command ), "xdotool search --name %s", windowName );
+    snprintf( command, sizeof( command ), "xdotool search --name \"%s\"", windowName );
 
     // Open a pipe to capture the output of the command
     FILE *pipe = popen( command, "r" );
