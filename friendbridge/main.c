@@ -56,7 +56,7 @@ int main()
 	Window id;
 	do
 	{
-		id = FindWindowByName( "Workspace" );
+		id = FindWindowByName( "Sign into your account" );
 		usleep( 50000 );
 	}
 	while( id == 0 );
