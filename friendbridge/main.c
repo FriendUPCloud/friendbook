@@ -57,6 +57,41 @@ void HandleWindowDestroyed( Display *display, Window window )
     // Add your custom processing or code to run when a window is created
 }
 
+void HandleWindowMoved( Display *display, Window window ) 
+{
+    XWindowAttributes windowAttr;
+    XGetWindowAttributes(display, window, &windowAttr);
+
+    // Get screen dimensions
+    int screenWidth = XDisplayWidth( display, DefaultScreen( display ) );
+    int screenHeight = XDisplayHeight( display, DefaultScreen( display ) );
+
+    // Check if the window is moved outside the screen
+    int newX = windowAttr.x;
+    int newY = windowAttr.y;
+
+    if( newX < 0 ) 
+    {
+        newX = 0;
+    } 
+    else if( newX + windowAttr.width > screenWidth )
+    {
+        newX = screenWidth - windowAttr.width;
+    }
+
+    if( newY < 0 )
+    {
+        newY = 0;
+    } 
+    else if( newY + windowAttr.height > screenHeight )
+    {
+        newY = screenHeight - windowAttr.height;
+    }
+
+    // Move the window to the adjusted position
+    XMoveWindow( display, window, newX, newY );
+}
+
 int main( int argc, char *argv[] )
 {
     Display *display = XOpenDisplay( NULL );
@@ -117,6 +152,10 @@ int main( int argc, char *argv[] )
         else if( ev.type == DestroyNotify )
         {
 		    HandleWindowDestroyed( display, ev.xdestroywindow.window );
+		}
+		else if( ev.type == ConfigureNotify )
+		{
+		    HandleWindowMoved( display, ev.xconfigure.window );
 		}
     }
     
