@@ -3,13 +3,7 @@
 log_file="$HOME/friendbook.log"
 
 # Wait till any window is open
-while true; do
-    if DISPLAY=:0 xdotool search --sync --name "."; then
-        echo "A window has been opened." >> "$log_file"
-        break
-    fi
-    sleep 1
-done
+friendbridge --waitforworkspace >> "$log_file"
 
 # Get a list of all open windows
 windows=$(DISPLAY=:0 xdotool search --all --name '' 2>/dev/null)
