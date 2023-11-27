@@ -41,6 +41,8 @@ WindowClassEntry *CreateWindowMatrix();
 
 void FreeWindowMatrix( WindowClassEntry *matrix );
 
+char *GetWindowTitle( Display *display, int windowId );
+
 void RefreshWindowMatrix( WindowClassEntry *matrix, Display *display );
 
 int WindowMatrixHasClass( WindowClassEntry *matrix, char *className );

@@ -37,6 +37,57 @@ int MoveWindowToLayer( Display *display, Window window, char *layerName )
 	return 0;
 }
 
+char *GetWindowTitle( Display *display, int windowId )
+{
+
+    if (display == NULL) 
+    {
+        fprintf( stderr, "Unable to open display.\n" );
+        return NULL;
+    }
+
+    Window window = windowId;
+
+    // Atom for the property we want to get (WM_NAME in this case)
+    Atom prop = XInternAtom( display, "_NET_WM_NAME", False );
+
+    // Check if the property exists
+    if( prop != None )
+    {
+        Atom type;
+        int format;
+        unsigned long nitems, bytes_after;
+        unsigned char *data = NULL;
+
+        // Get the property value
+        if( XGetWindowProperty( display, window, prop, 0, (~0L), False, AnyPropertyType,
+                               &type, &format, &nitems, &bytes_after, &data) == Success
+       	)
+       	{
+            if( type == XInternAtom( display, "UTF8_STRING", False ) )
+            {
+                printf( "Window Name: %s\n", ( char * )data );
+            }
+            else 
+            {
+                printf( "Unsupported property type.\n" );
+            }
+            return ( char *)data;
+        }
+        else
+        {
+            printf( "Failed to get window property.\n" );
+        }
+    } 
+    else
+    {
+        printf( "Failed to intern atom for _NET_WM_NAME.\n" );
+    }
+
+    return NULL;
+}
+
+
 // Gets some info about a window, like title, id, class and instance names
 void PrintWindowInfo( Display *display, Window window )
 {
