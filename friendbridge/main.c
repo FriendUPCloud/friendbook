@@ -64,7 +64,7 @@ int main()
 	printf( "Moving window %ld to below\n", ( long int )id );
 	MoveWindowToLayer( id, "below" );
 	
-	// Collect all windows in the window matrix
+	/*// Collect all windows in the window matrix
 	RefreshWindowMatrix( matrix, display );
 
 	XEvent ev;
@@ -75,7 +75,7 @@ int main()
         {
             HandleWindowCreated( display, ev.xcreatewindow.window );
         }
-    }
+    }*/
 
     XCloseDisplay( display );
     
