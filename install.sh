@@ -9,3 +9,7 @@ cp custom.xml ~/.config/openbox/rc.xml
 cp custom.xml ~/.config/openbox/
 mkdir -p ~/.config/friendbook
 cp assets/postscript.sh ~/.config/friendbook/
+
+cd friendbridge && make clean && make && cd ..
+sudo cp friendbridge/friendbridge /usr/bin/
+

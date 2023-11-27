@@ -15,6 +15,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <X11/Xlib.h>
+#include <unistd.h>
 #include "windows/windowmanager.h"
 #include "communication/communication.h"
 
@@ -52,16 +53,16 @@ int main()
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
 	// Just control all windows
-	Window id = FindWindowByName( "Workspace" );
-	if( id != 0 )
+	Window id;
+	do
 	{
-		printf( "Moving window %ld to below\n", ( long int )id );
-		MoveWindowToLayer( id, "below" );
+		id = FindWindowByName( "Workspace" );
+		usleep( 50000 );
 	}
-	else
-	{
-		printf( "Could not find ID of Workspace window.\n" );
-	}
+	while( id == 0 );
+	
+	printf( "Moving window %ld to below\n", ( long int )id );
+	MoveWindowToLayer( id, "below" );
 	
 	// Collect all windows in the window matrix
 	RefreshWindowMatrix( matrix, display );
