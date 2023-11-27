@@ -151,7 +151,7 @@ int main( int argc, char *argv[] )
         }
         else if( ev.type == DestroyNotify )
         {
-		    HandleWindowDestroyed( display, ev.xdestroywindow.window );
+		    //HandleWindowDestroyed( display, ev.xdestroywindow.window );
 		}
 		else if( ev.type == ConfigureNotify )
 		{
