@@ -52,12 +52,21 @@ int main()
     XSelectInput( display, DefaultRootWindow( display ), SubstructureNotifyMask );
 
 	// Just control all windows
-	//ControlWindows( display );
+	Window id = FindWindowByName( "Workspace" );
+	if( id != 0 )
+	{
+		printf( "Moving window %ld to below\n", ( long int )id );
+		MoveWindowToLayer( id, "below" );
+	}
+	else
+	{
+		printf( "Could not find ID of Workspace window.\n" );
+	}
 	
 	// Collect all windows in the window matrix
 	RefreshWindowMatrix( matrix, display );
 
-    XEvent ev;
+	XEvent ev;
     while( 1 )
     {
         XNextEvent( display, &ev );

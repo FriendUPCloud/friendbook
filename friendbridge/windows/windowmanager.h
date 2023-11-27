@@ -33,6 +33,7 @@ typedef struct WindowEntry_s
 	struct WindowEntry_s *next;
 	char *windowName;
 	char *windowTitle;
+	int windowId;
 	Display *display;
 	Window *window;
 } WindowEntry;
@@ -40,6 +41,8 @@ typedef struct WindowEntry_s
 WindowClassEntry *CreateWindowMatrix();
 
 void FreeWindowMatrix( WindowClassEntry *matrix );
+
+Window FindWindowByName( const char *windowName );
 
 char *GetWindowTitle( Display *display, int windowId );
 
@@ -57,7 +60,7 @@ Window *GetWindowFromMatrix( WindowClassEntry *matrix, char *className, char *wi
 
 void FreeWindowEntry( WindowEntry *entry );
 
-int MoveWindowToLayer( Display *display, Window window, char *layerName );
+int MoveWindowToLayer( unsigned long windowID, const char *layerName );
 
 void PrintWindowInfo( Display *display, Window window );
 

@@ -21,7 +21,7 @@ WindowClassEntry *CreateWindowMatrix()
 	return wm;
 }
 
-int MoveWindowToLayer( Display *display, Window window, char *layerName )
+/*int MoveWindowToLayer( Display *display, Window window, char *layerName )
 {
 	if( layerName == NULL ) return 0;
 	if( strcmp( layerName, "below" ) == 0 )
@@ -32,10 +32,77 @@ int MoveWindowToLayer( Display *display, Window window, char *layerName )
 		wc.sibling = root;
 		wc.stack_mode = Below;
 
-		XConfigureWindow(display, window, CWSibling | CWStackMode, &wc);
+		if( XConfigureWindow( display, window, CWSibling | CWStackMode, &wc ) == 0 )
+		{
+			printf( "Moved window correctly!\n" );
+			return 1;
+		}
 	}
+	printf( "Failed to move window...\n" );
 	return 0;
+}*/
+
+int MoveWindowToLayer( unsigned long windowID, const char *layerName )
+{
+   	if( strcmp( "below", layerName ) == 0 )
+	{
+		char command[ 100 ];
+		snprintf( command, sizeof( command ), "wmctrl -i -r 0x%lx -b add,below", windowID );
+
+		if( system( command ) == -1 )
+		{
+		    perror( "Error running wmctrl" );
+		    return 1; // Return an error code if the function fails
+		}
+	}
+
+    return 0;
 }
+
+Window FindWindowByName( const char *windowName )
+{
+    // Construct the xdotool command
+    char command[ 100 ];
+    snprintf( command, sizeof( command ), "xdotool search --name %s", windowName );
+
+    // Open a pipe to capture the output of the command
+    FILE *pipe = popen( command, "r" );
+    if( pipe == NULL )
+    {
+        perror( "Error opening pipe" );
+        return 0;  // Return 0 to indicate an error
+    }
+
+    // Read the output of the command into a buffer
+    char buffer[ 256 ];
+    if( fgets( buffer, sizeof( buffer ), pipe ) != NULL )
+    {
+        // Remove newline characters from the output
+        size_t len = strlen( buffer );
+        if( len > 0 && buffer[ len - 1 ] == '\n' )
+        {
+            buffer[ len - 1 ] = '\0';
+        }
+
+        // Convert the string to a window ID
+        Window windowID = strtoul( buffer, NULL, 0 );
+
+        // Close the pipe
+        if( pclose( pipe ) == -1 )
+        {
+            perror( "Error closing pipe" );
+        }
+        return windowID;
+    }
+    else
+    {
+        perror( "Error reading from pipe" );
+        // Close the pipe and return 0 to indicate an error
+        pclose( pipe );
+        return 0;
+    }
+}
+
 
 char *GetWindowTitle( Display *display, int windowId )
 {
@@ -48,43 +115,52 @@ char *GetWindowTitle( Display *display, int windowId )
 
     Window window = windowId;
 
-    // Atom for the property we want to get (WM_NAME in this case)
-    Atom prop = XInternAtom( display, "_NET_WM_NAME", False );
+    // Construct the xdotool command
+    char command[ 100 ];
+    snprintf( command, sizeof( command ), "xdotool getwindowname %lu", ( unsigned long )window );
 
-    // Check if the property exists
-    if( prop != None )
+    // Open a pipe to capture the output of the command
+    FILE *pipe = popen( command, "r" );
+    if( pipe == NULL )
     {
-        Atom type;
-        int format;
-        unsigned long nitems, bytes_after;
-        unsigned char *data = NULL;
-
-        // Get the property value
-        if( XGetWindowProperty( display, window, prop, 0, (~0L), False, AnyPropertyType,
-                               &type, &format, &nitems, &bytes_after, &data) == Success
-       	)
-       	{
-            if( type == XInternAtom( display, "UTF8_STRING", False ) )
-            {
-                printf( "Window Name: %s\n", ( char * )data );
-            }
-            else 
-            {
-                printf( "Unsupported property type.\n" );
-            }
-            return ( char *)data;
-        }
-        else
-        {
-            printf( "Failed to get window property.\n" );
-        }
-    } 
-    else
-    {
-        printf( "Failed to intern atom for _NET_WM_NAME.\n" );
+        perror( "Error opening pipe" );
+        return NULL;
     }
 
-    return NULL;
+    // Read the output of the command into a buffer
+    char buffer[ 256 ];
+    char *windowTitle = NULL;
+    
+    
+    if( fgets( buffer, sizeof( buffer ), pipe ) != NULL )
+    {
+        // Remove newline characters from the output
+        size_t len = strlen( buffer );
+        if( len > 0 && buffer[len - 1] == '\n' )
+        {
+            buffer[ len - 1 ] = '\0';
+        }
+
+        // Now, 'buffer' contains the window title
+        printf( "Window Title: %s\n", buffer );
+
+        // If needed, you can copy the title to a dynamically allocated string
+        windowTitle = strdup( buffer );
+    }
+    else 
+    {
+        perror( "Error reading from pipe" );
+    }
+
+    // Close the pipe
+    if( pclose( pipe ) == -1 )
+    {
+        perror( "Error closing pipe" );
+        if( windowTitle ) free( windowTitle );
+        return NULL;
+    }
+
+    return windowTitle;
 }
 
 
@@ -320,6 +396,7 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		bdata->next = NULL;
 		bdata->display = display;
 		bdata->window = window;
+		bdata->windowId = *window;
 		
 		// Copy window name, make sure it does not fail
 		bdata->windowName = calloc( 1, strlen( windowName ) + 1 );
@@ -328,7 +405,9 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		bdata->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
 		snprintf( bdata->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
 		
-		printf( " > In %s, added 1st windowindow \"%s\" titled: %s\n", className, windowName, windowTitle );
+		char *title = GetWindowTitle( display, *window );
+		printf( " > In %s, added 1st (%ld) windowindow \"%s\" titled: %s (%s)\n", className, *window, windowName, windowTitle, title );
+		free( title );
 	}
 	else
 	{
@@ -345,6 +424,7 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		new->next = NULL;
 		new->display = display;
 		new->window = window;
+		new->windowId = *window;
 		
 		// Copy window name, make sure it does not fail
 		new->windowName = calloc( 1, strlen( windowName ) + 1 );
@@ -353,7 +433,9 @@ int WindowMatrixAddWindow( WindowClassEntry *matrix, char *className, char *wind
 		new->windowTitle = calloc( 1, strlen( windowTitle ) + 1 );
 		snprintf( new->windowTitle, strlen( windowTitle ) + 1, "%s", windowTitle );
 		
-		printf( " > In %s, added window \"%s\" titled: %s\n", className, windowName, windowTitle );
+		char *title = GetWindowTitle( display, *window );
+		printf( " > In %s, added (%ld) window \"%s\" titled: %s (%s)\n", className, *window, windowName, windowTitle, title );
+	    free( title );
 	}
 	return 1;
 }
