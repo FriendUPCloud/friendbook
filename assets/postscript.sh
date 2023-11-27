@@ -56,7 +56,8 @@ while true; do
     sleep 1
 done
 
-
+# Put friendbridge in normal operation
+friendbridge >> "$log_file"
 
 echo "Done." >> "$log_file"
 
