@@ -6,14 +6,6 @@ echo "Welcome to FriendBook" > "$log_file"
 
 cd Projects/friendup/build && ./FriendCore > /dev/null &
 
-#while true; do
-#    if ps aux | grep -q '[o]penbox'; then
-#        echo "openbox is running" >> "$log_file"
-#        break
-#    fi
-#    sleep 1
-#done
-
 sleep 5
 
 google-chrome-stable --kiosk -disable-session-crashed-bubble --disable-infobars --kiosk-printing --app=https://localhost:6502/webclient/index.html?native=true &
