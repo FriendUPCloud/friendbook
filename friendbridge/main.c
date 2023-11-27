@@ -57,7 +57,7 @@ void HandleWindowDestroyed( Display *display, Window window )
     // Add your custom processing or code to run when a window is created
 }
 
-void HandleWindowMoved( Display *display, Window window ) 
+void HandleWindowResized( Display *display, Window window ) 
 {
     XWindowAttributes windowAttr;
     XGetWindowAttributes(display, window, &windowAttr);
@@ -90,6 +90,42 @@ void HandleWindowMoved( Display *display, Window window )
 
     // Move the window to the adjusted position
     XMoveWindow( display, window, newX, newY );
+}
+
+void HandleWindowMoved( Display *display, XConfigureRequestEvent *event )
+{
+    // Get screen dimensions
+    int screenWidth = XDisplayWidth( display, DefaultScreen( display ) );
+    int screenHeight = XDisplayHeight( display, DefaultScreen( display ) );
+
+    // Check if the window is moved outside the screen
+    int newX = event->x;
+    int newY = event->y;
+
+    if( newX < 0 ) 
+    {
+        newX = 0;
+    }
+    else if( newX + event->width > screenWidth )
+    {
+        newX = screenWidth - event->width;
+    }
+
+    if( newY < 0 )
+    {
+        newY = 0;
+    }
+    else if( newY + event->height > screenHeight )
+    {
+        newY = screenHeight - event->height;
+    }
+
+    // Modify the configuration to the adjusted position
+    XWindowChanges wc;
+    wc.x = newX;
+    wc.y = newY;
+
+    XConfigureWindow( display, event->window, event->value_mask, &wc );
 }
 
 int main( int argc, char *argv[] )
@@ -155,7 +191,11 @@ int main( int argc, char *argv[] )
 		}
 		else if( ev.type == ConfigureNotify )
 		{
-		    HandleWindowMoved( display, ev.xconfigure.window );
+		    HandleWindowResized( display, ev.xconfigure.window );
+		}
+		else if( ev.type == ConfigureRequest )
+		{
+		    HandleWindowMoved( display, &ev.xconfigurerequest );
 		}
     }
     
