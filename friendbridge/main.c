@@ -190,7 +190,7 @@ int main( int argc, char *argv[] )
 	
     while( 1 )
     {
-    	XGetInputFocus(display, &focusedWindow, NULL);
+    	//XGetInputFocus(display, &focusedWindow, NULL);
     
         XNextEvent( display, &ev );
         if( ev.type == CreateNotify )
@@ -209,13 +209,13 @@ int main( int argc, char *argv[] )
 		{
 		    HandleWindowMoved( display, &ev.xconfigurerequest );
 		}
-		else if( ev.type == MotionNotify )
+		/*else if( ev.type == MotionNotify )
 		{
 			if( focusedWindow > 0 )
 			{
 				HandleWindowMoved( display, &ev.xconfigurerequest );
 			}
-		}
+		}*/
     }
     
     // Clear memory used by window matrix
