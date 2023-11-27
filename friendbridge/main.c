@@ -186,8 +186,12 @@ int main( int argc, char *argv[] )
 	RefreshWindowMatrix( matrix, display );
 
 	XEvent ev;
+	Window focusedWindow;
+	
     while( 1 )
     {
+    	XGetInputFocus(display, &focusedWindow, NULL);
+    
         XNextEvent( display, &ev );
         if( ev.type == CreateNotify )
         {
@@ -204,6 +208,13 @@ int main( int argc, char *argv[] )
 		else if( ev.type == ConfigureRequest )
 		{
 		    HandleWindowMoved( display, &ev.xconfigurerequest );
+		}
+		else if( ev.type == MotionNotify )
+		{
+			if( focusedWindow > 0 )
+			{
+				HandleWindowMoved( display, &ev.xconfigurerequest );
+			}
 		}
     }
     
