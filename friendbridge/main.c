@@ -120,7 +120,15 @@ void HandleWindowMoved( Display *display, XConfigureRequestEvent *event )
         newY = screenHeight - event->height;
     }
 
-    // Modify the configuration to the adjusted position
+   // Set the window manager hint for position
+    XSizeHints hints;
+    hints.flags = PPosition;
+    hints.x = newX;
+    hints.y = newY;
+
+    XSetWMNormalHints( display, event->window, &hints );
+
+    // Perform the configuration change
     XWindowChanges wc;
     wc.x = newX;
     wc.y = newY;
