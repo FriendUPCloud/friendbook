@@ -38,7 +38,26 @@ void HandleWindowCreated( Display *display, Window window )
     // Add your custom processing or code to run when a window is created
 }
 
-int main()
+void HandleWindowDestroyed( Display *display, Window window )
+{
+    printf( "Window destroyed with ID: %lu\n", window );
+
+    // Retrieve and print the window title
+    char *windowTitle = NULL;
+    XFetchName( display, window, &windowTitle );
+    if( windowTitle != NULL )
+    {
+        printf( "Window title: %s\n", windowTitle );
+        XFree( windowTitle );  // Free the memory allocated by XFetchName
+    }
+    else
+    {
+        printf( "Unable to retrieve window title.\n" );
+    }
+    // Add your custom processing or code to run when a window is created
+}
+
+int main( int argc, char *argv[] )
 {
     Display *display = XOpenDisplay( NULL );
     if( display == NULL )
@@ -46,6 +65,21 @@ int main()
         fprintf( stderr, "Unable to open display.\n" );
         return 1;
     }
+    
+    int quitAfterSignin = 0;
+
+	if( argc > 1 )
+	{
+		int c = 1;
+		for( ; c < argc; c++ )
+		{
+			printf( "Argument: %s\n", argv[ c ] );
+			if( strcmp( argv[ c ], "--waitforworkspace" ) == 0 )
+			{
+				quitAfterSignin = 1;
+			}
+		}
+	}
 
 	// Create window matrix
 	WindowClassEntry *matrix = CreateWindowMatrix();
@@ -64,7 +98,12 @@ int main()
 	printf( "Moving window %ld to below\n", ( long int )id );
 	MoveWindowToLayer( id, "below" );
 	
-	/*// Collect all windows in the window matrix
+	if( quitAfterSignin == 1 ) 
+	{
+		goto quit;
+	}
+	
+	// Collect all windows in the window matrix
 	RefreshWindowMatrix( matrix, display );
 
 	XEvent ev;
@@ -75,11 +114,18 @@ int main()
         {
             HandleWindowCreated( display, ev.xcreatewindow.window );
         }
-    }*/
-
-    XCloseDisplay( display );
+        else if( ev.type == DestroyNotify )
+        {
+		    HandleWindowDestroyed( display, ev.xdestroywindow.window );
+		}
+    }
     
     // Clear memory used by window matrix
     FreeWindowMatrix( matrix );
+    
+    quit:
+
+    XCloseDisplay( display );
+    
     return 0;
 }
